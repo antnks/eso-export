@@ -4,6 +4,11 @@ ESO is a Lithuanian grid operator. It offers a web self service to view and expo
 
 # Usage
 
+You may need to install Pyhton dependencies:
+
+* bs4
+* requests
+
 Open the script and update it with your email, password and the property ID (objektas). The property ID can be found on the web export page: view html source and search for `option value="`
 
 # Adjust
