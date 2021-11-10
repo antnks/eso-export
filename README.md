@@ -13,4 +13,4 @@ Open the script and update it with your email, password and the property ID (obj
 
 # Adjust
 
-You can adjust the CSV output and add more fields or fields' order by directly editting the sript
+You can adjust the CSV output and add more fields or fields' order by directly editting the script
