@@ -4,7 +4,7 @@ ESO is a Lithuanian grid operator. It offers a web self service to view and expo
 
 # Usage
 
-You may need to install Pyhton dependencies:
+You may need to install Python dependencies:
 
 * bs4
 * requests
