@@ -2,9 +2,9 @@
 
 import requests
 from bs4 import BeautifulSoup
-from zipfile import ZipFile
-import io
-import csv
+import json
+import datetime
+from dateutil.rrule import rrule, DAILY
 
 EMAIL = "YOUR_EMAIL_HERE"
 PASS = "YOUR_PASSOWRD_HERE"
@@ -17,19 +17,45 @@ login = {"login_type":"1", "name":EMAIL, "pass":PASS, "form_id":"user_login_form
 
 ses = requests.session()
 res = ses.post("https://mano.eso.lt/", data=login, verify=True)
-res = ses.get("https://mano.eso.lt/consumption/history", verify=True)
+res = ses.get("https://mano.eso.lt/consumption", verify=True)
 
 soup = BeautifulSoup(res.text, "html.parser")
 csrf = soup.find('input', {'name':'form_token'})['value']
 
-download = {"period":"3", "display_type":"H", "objects_H":PROP, "objects_S":"", "form_token":csrf, "form_id":"eso_consumption_history_export_form"}
-res = ses.post("https://mano.eso.lt/consumption/history", data=download, verify=True)
+sd = datetime.date(2023, 1, 1)
+ed = datetime.date.today()
 
-z = ZipFile(io.BytesIO(res.content))
-for f in z.namelist():
-	data = z.open(f, "r")
-	lines = csv.reader(io.TextIOWrapper(data, "latin-1"), delimiter=';')
-	for row in lines:
-		# adjust this line to change fields order or format
-		print(row[12].strip() + ";" + row[14].strip())
+# iterate through days in drupal
+for dt in rrule(DAILY, dtstart=sd, until=ed):
 
+	stamp  = dt.strftime("%Y-%m-%d")
+	stamp2 = (dt + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+
+	# POST body
+	export = {"objects[]" : PROP,
+			  "display_type" : "hourly",
+			  "period" : "day",
+			  "energy_type" : "general",
+			  "active_date_value" : stamp +  " 00:00",
+			  "next_button_value" : stamp2 + " 00:00",
+			  "form_token" : csrf,
+			  "form_id" : "eso_consumption_history_form",
+			  "_triggering_element_name" : "op"}
+
+	res = ses.post("https://mano.eso.lt/consumption?ajax_form=1&_wrapper_format=drupal_ajax", data=export, verify=False, proxies=proxies)
+
+	# hackish way of parsing drupal's JSON response
+	stats = {}
+	data = json.loads(res.text)
+	for d in data:
+		if d["command"] == "settings":
+			if "eso_consumption_history_form" in d["settings"]:
+				for s in d["settings"]["eso_consumption_history_form"]["graphics_data"]["datasets"]:
+					if s["key"] == "P+":
+						stats = s["record"]
+						break
+		if stats != {}:
+			break
+
+	for stat in stats:
+		print(stat["date"], ",", stat["value"])
