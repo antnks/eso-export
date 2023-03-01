@@ -11,7 +11,7 @@ ESO is a Lithuanian grid operator. It offers a web self service to view and expo
 
 # Usage
 
-You may need to install Pyhton dependencies:
+You may need to install Python dependencies:
 
 * bs4
 * requests
@@ -20,5 +20,5 @@ Open the script and update it with your email, password and the property ID (obj
 
 # Adjust
 
-You can adjust the date, default is 2023-01-01.
+You can adjust the start date of the export directly in the script, default is 2023-01-01.
 
