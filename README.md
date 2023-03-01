@@ -1,6 +1,6 @@
 # UPDATE 2023-03-01
 
-Due to the bug in ESO API, ZIP cannot be exported for those who replace smart electric meter recently.
+Due to the bug in ESO API, ZIP cannot be exported for those who has replaced smart electric meter recently.
 In that case the export will only show old numbers prior to the change.
 I have contacted ESO and they said everything is broken and they cannot fix it at the moment.
 Because of that the script has been updated to use a hackish way of exporting through the Drupal JSON.
