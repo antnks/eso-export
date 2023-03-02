@@ -42,7 +42,7 @@ for dt in rrule(DAILY, dtstart=sd, until=ed):
 			  "form_id" : "eso_consumption_history_form",
 			  "_triggering_element_name" : "op"}
 
-	res = ses.post("https://mano.eso.lt/consumption?ajax_form=1&_wrapper_format=drupal_ajax", data=export, verify=False, proxies=proxies)
+	res = ses.post("https://mano.eso.lt/consumption?ajax_form=1&_wrapper_format=drupal_ajax", data=export, verify=True)
 
 	# hackish way of parsing drupal's JSON response
 	stats = {}
